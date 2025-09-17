@@ -1,0 +1,39 @@
+#include "HUSKYLENS.h"
+#include <Servo.h>
+HUSKYLENS huskylens;
+Servo direccion;
+void setup() {
+direccion.attach(5);
+    Serial.begin(115200);
+    Wire.begin();
+    while (!huskylens.begin(Wire))
+    {
+        Serial.println(F("Begin failed!"));
+        Serial.println(F("1.Please recheck the \"Protocol Type\" in HUSKYLENS (General Settings>>Protocol Type>>I2C)"));
+        Serial.println(F("2.Please recheck the connection."));
+        delay(100);
+    }
+}
+
+void loop() {
+  if (huskylens.request()) {
+   if ("Color ID 2" )
+    while (huskylens.available()) {
+      HUSKYLENSResult result = huskylens.read();
+      Serial.print("Color ID: ");
+      Serial.print(result.ID);
+      int color=result.ID;
+      Serial.print(" - X: ");
+      Serial.print(result.xCenter);
+      Serial.print(" - Y: ");
+      Serial.println(result.yCenter);
+      if(color==1){
+      direccion.write(180);
+    }else if(color==2){
+     direccion.write(90);
+                      
+    }
+    }
+    
+  }
+delay(100);
